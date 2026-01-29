@@ -52,15 +52,15 @@ jobs:
         with:
           name: social-media-text
           path: |
-            output/last-chance-twitter.txt
-            output/last-chance-instagram.txt
-            output/last-chance-generic.txt
+            output/last-chance-twitter_*.txt
+            output/last-chance-instagram_*.txt
+            output/last-chance-generic_*.txt
 
       - name: Upload screenshot
         uses: actions/upload-artifact@v4
         with:
           name: screenshot
-          path: output/last-chance.png
+          path: output/last-chance_*.png
 
       - name: Upload HTML
         uses: actions/upload-artifact@v4

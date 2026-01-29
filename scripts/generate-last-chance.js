@@ -1,6 +1,19 @@
 const fs = require("fs");
 const path = require("path");
 
+/**
+ * Generate a timestamp string for filenames (YYYY-MM-DD_HHMM)
+ */
+function getTimestamp() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  return `${year}-${month}-${day}_${hours}${minutes}`;
+}
+
 // Configuration constants
 const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
 const MIN_DURATION_MS = 60 * 60 * 1000; // 60 minutes
@@ -298,7 +311,14 @@ function formatSocialDate(isoDate) {
  * @param {string} platform - 'twitter' or 'instagram'
  */
 function generateSocialText(movies, venues, platform = "twitter") {
-  const emojis = ["??", "??", "??", "???", "???", "??"];
+  const emojis = [
+    "\u{1F3AC}",
+    "\u{1F3A5}",
+    "\u{1F4FD}",
+    "\u2728",
+    "\u2B50",
+    "\u{1F37F}",
+  ];
   const randomEmoji = () => emojis[Math.floor(Math.random() * emojis.length)];
 
   // Group movies by venue
@@ -318,9 +338,9 @@ function generateSocialText(movies, venues, platform = "twitter") {
     return nameA.localeCompare(nameB);
   });
 
-  let text = `?? LAST CHANCE THIS WEEK! ??\n\n`;
-  text += `These ${movies.length} films are leaving London cinemas soon - catch them before they're gone! ???????\n\n`;
-  text += `??? Every film, every cinema, one place. Find showtimes at Clusterflick.com\n\n`;
+  let text = `\u{1F3AC} LAST CHANCE THIS WEEK! \u{1F3AC}\n\n`;
+  text += `These ${movies.length} films are leaving London cinemas soon - catch them before they're gone! \u{1F39F}\u{1F37F}\n\n`;
+  text += `\u{1F310} Every film, every cinema, one place. Find showtimes at Clusterflick.com\n\n`;
   text += `---\n\n`;
 
   sortedVenueIds.forEach((venueId) => {
@@ -330,7 +350,7 @@ function generateSocialText(movies, venues, platform = "twitter") {
     const handleText = handle ? ` (@${handle})` : "";
     const venueMovies = moviesByVenue[venueId];
 
-    text += `?? ${venueName}${handleText}\n`;
+    text += `\u{1F4CD} ${venueName}${handleText}\n`;
 
     // Sort movies by showtime within venue
     venueMovies.sort(
@@ -347,7 +367,7 @@ function generateSocialText(movies, venues, platform = "twitter") {
 
   text += `---\n\n`;
   text += `#LastChance #LondonCinema #IndieFilm #Clusterflick\n\n`;
-  text += `?? Pro tip: The best seat is the one you're actually sitting in. Go see something!`;
+  text += `\u{1F4A1} Pro tip: The best seat is the one you're actually sitting in. Go see something!`;
 
   return text;
 }
@@ -413,14 +433,19 @@ console.log(`Found ${allLastChanceMovies.length} movies for social text (all)`);
 const outputDir = path.join(rootDir, "output");
 fs.mkdirSync(outputDir, { recursive: true });
 
+const timestamp = getTimestamp();
+
 // Generate Twitter version
 const twitterText = generateSocialText(
   allLastChanceMovies,
   data.venues,
   "twitter",
 );
-const twitterPath = path.join(outputDir, "last-chance-twitter.txt");
-fs.writeFileSync(twitterPath, twitterText);
+const twitterPath = path.join(
+  outputDir,
+  `last-chance-twitter_${timestamp}.txt`,
+);
+fs.writeFileSync(twitterPath, twitterText, "utf8");
 console.log(`Twitter text generated: ${twitterPath}`);
 
 // Generate Instagram version
@@ -429,12 +454,18 @@ const instagramText = generateSocialText(
   data.venues,
   "instagram",
 );
-const instagramPath = path.join(outputDir, "last-chance-instagram.txt");
-fs.writeFileSync(instagramPath, instagramText);
+const instagramPath = path.join(
+  outputDir,
+  `last-chance-instagram_${timestamp}.txt`,
+);
+fs.writeFileSync(instagramPath, instagramText, "utf8");
 console.log(`Instagram text generated: ${instagramPath}`);
 
 // Generate generic version (no handles)
 const genericText = generateSocialText(allLastChanceMovies, data.venues, null);
-const genericPath = path.join(outputDir, "last-chance-generic.txt");
-fs.writeFileSync(genericPath, genericText);
+const genericPath = path.join(
+  outputDir,
+  `last-chance-generic_${timestamp}.txt`,
+);
+fs.writeFileSync(genericPath, genericText, "utf8");
 console.log(`Generic text generated: ${genericPath}`);

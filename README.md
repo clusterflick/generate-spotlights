@@ -36,9 +36,9 @@ npm run generate
 
 **Outputs:**
 - `site/last-chance.html` - Visual collage of movie posters
-- `output/last-chance-twitter.txt` - Twitter post with @handles
-- `output/last-chance-instagram.txt` - Instagram post with @handles
-- `output/last-chance-generic.txt` - Generic post without handles
+- `output/last-chance-twitter_YYYY-MM-DD_HHMM.txt` - Twitter post with @handles
+- `output/last-chance-instagram_YYYY-MM-DD_HHMM.txt` - Instagram post with @handles
+- `output/last-chance-generic_YYYY-MM-DD_HHMM.txt` - Generic post without handles
 
 ### Take Screenshot
 
@@ -51,7 +51,7 @@ npm run screenshot
 ```
 
 **Outputs:**
-- `output/last-chance.png` - Screenshot of the collage
+- `output/last-chance_YYYY-MM-DD_HHMM.png` - Screenshot of the collage
 
 ### Format Code
 
