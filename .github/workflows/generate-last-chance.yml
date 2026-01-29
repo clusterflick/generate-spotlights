@@ -39,7 +39,7 @@ jobs:
           repository: "clusterflick/data-matched"
           latest: true
           fileName: "*"
-          out-file-path: "data-matched"
+          out-file-path: "matched-data"
 
       - name: Generate last chance content
         run: npm run generate
