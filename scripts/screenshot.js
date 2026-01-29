@@ -1,27 +1,19 @@
 const { chromium } = require("playwright");
 const path = require("path");
+const { getTimestamp } = require("./lib/utils");
 
 /**
- * Generate a timestamp string for filenames (YYYY-MM-DD_HHMM)
+ * Take a screenshot of a generated HTML file
+ * @param {string} spotlightType - The type of spotlight (e.g., 'last-chance', 'new-films')
  */
-function getTimestamp() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  return `${year}-${month}-${day}_${hours}${minutes}`;
-}
-
-async function takeScreenshot() {
+async function takeScreenshot(spotlightType) {
   const rootDir = path.join(__dirname, "..");
-  const htmlPath = path.join(rootDir, "site", "last-chance.html");
+  const htmlPath = path.join(rootDir, "site", `${spotlightType}.html`);
   const timestamp = getTimestamp();
   const outputPath = path.join(
     rootDir,
     "output",
-    `last-chance_${timestamp}.png`,
+    `${spotlightType}_${timestamp}.png`,
   );
 
   console.log(`Opening: ${htmlPath}`);
@@ -65,4 +57,6 @@ async function takeScreenshot() {
   await browser.close();
 }
 
-takeScreenshot().catch(console.error);
+// Get spotlight type from command line args, default to 'last-chance'
+const spotlightType = process.argv[2] || "last-chance";
+takeScreenshot(spotlightType).catch(console.error);

@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "Scripts for generating social media content for Clusterflick",
   "scripts": {
-    "generate": "node scripts/generate-last-chance.js",
-    "screenshot": "node scripts/screenshot-last-chance.js",
+    "generate:last-chance": "node scripts/generate-last-chance.js",
+    "generate:new-films": "node scripts/generate-new-films.js",
+    "screenshot:last-chance": "node scripts/screenshot.js last-chance",
+    "screenshot:new-films": "node scripts/screenshot.js new-films",
     "format": "prettier --write \"scripts/**/*.js\" \"templates/**/*.html\" \".github/**/*.yml\"",
     "format:check": "prettier --check \"scripts/**/*.js\" \"templates/**/*.html\" \".github/**/*.yml\""
   },
