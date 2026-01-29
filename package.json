@@ -1,0 +1,21 @@
+{
+  "name": "generate-spotlights",
+  "version": "1.0.0",
+  "description": "Scripts for generating social media content for Clusterflick",
+  "scripts": {
+    "generate": "node scripts/generate-last-chance.js",
+    "screenshot": "node scripts/screenshot-last-chance.js",
+    "format": "prettier --write \"scripts/**/*.js\" \"templates/**/*.html\" \".github/**/*.yml\"",
+    "format:check": "prettier --check \"scripts/**/*.js\" \"templates/**/*.html\" \".github/**/*.yml\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "playwright": "^1.58.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1"
+  }
+}
