@@ -126,7 +126,7 @@ runSpotlight({
   socialText: {
     header: "NEW FILMS THIS WEEK!",
     intro:
-      "These {{count}} fresh films just landed in London cinemas - check them out!",
+      "These {{count}} films just landed this week in London cinemas - check them out!",
     hashtags: "#NewFilms #LondonCinema #IndieFilm #Clusterflick",
     venueIdField: "firstVenueId",
     formatMovieLine: (movie, emoji) => `   ${emoji} ${movie.title}\n`,
