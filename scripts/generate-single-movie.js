@@ -60,7 +60,9 @@ function generateSingleMovie(tmdbId) {
   // Calculate showing duration text
   let showingDuration = "";
   if (lastPerformanceTime > now) {
-    const daysUntilLast = Math.ceil((lastPerformanceTime - now) / (1000 * 60 * 60 * 24));
+    const daysUntilLast = Math.ceil(
+      (lastPerformanceTime - now) / (1000 * 60 * 60 * 24),
+    );
     if (daysUntilLast <= 3) {
       showingDuration = `the next ${daysUntilLast} day${daysUntilLast === 1 ? "" : "s"}`;
     } else if (daysUntilLast <= 7) {
@@ -123,7 +125,10 @@ function generateSingleMovie(tmdbId) {
         } else {
           // Pluralize: add 's' if doesn't end in 's'
           const plural = groupName.endsWith("s") ? groupName : `${groupName}s`;
-          displayItems.push({ text: `${venueNames.length} ${plural}`, venueCount: venueNames.length });
+          displayItems.push({
+            text: `${venueNames.length} ${plural}`,
+            venueCount: venueNames.length,
+          });
         }
       });
 
@@ -149,7 +154,10 @@ function generateSingleMovie(tmdbId) {
     finalItems = displayItems.slice(0, MAX_DISPLAY_ITEMS - 1);
     // Calculate actual venue count for truncated items
     const truncatedItems = displayItems.slice(MAX_DISPLAY_ITEMS - 1);
-    moreVenueCount = truncatedItems.reduce((sum, item) => sum + item.venueCount, 0);
+    moreVenueCount = truncatedItems.reduce(
+      (sum, item) => sum + item.venueCount,
+      0,
+    );
   }
 
   // Format venue names as comma-separated list with "&" before last item
@@ -167,7 +175,10 @@ function generateSingleMovie(tmdbId) {
   } else if (finalItems.length === 2) {
     venuesText = `${wrapVenue(finalItems[0].text)} & ${wrapVenue(finalItems[1].text)}`;
   } else if (finalItems.length > 2) {
-    const allButLast = finalItems.slice(0, -1).map((item) => wrapVenue(item.text)).join(", ");
+    const allButLast = finalItems
+      .slice(0, -1)
+      .map((item) => wrapVenue(item.text))
+      .join(", ");
     venuesText = `${allButLast}, & ${wrapVenue(finalItems[finalItems.length - 1].text)}`;
   }
 
@@ -200,16 +211,20 @@ function generateSingleMovie(tmdbId) {
   const year = movie.releaseDate
     ? new Date(movie.releaseDate).getFullYear()
     : movie.year || "";
-  
+
   // Look up director name - director field may be an ID
   const directorId = movie.director || movie.directors?.[0] || "";
   let directorName = "";
   if (directorId) {
     // Try to look up from people data
     const person = data.people?.[directorId];
-    directorName = person?.name || (typeof directorId === "string" && !/^\d+$/.test(directorId) ? directorId : "");
+    directorName =
+      person?.name ||
+      (typeof directorId === "string" && !/^\d+$/.test(directorId)
+        ? directorId
+        : "");
   }
-  
+
   const synopsis = movie.overview || movie.synopsis || "";
 
   // Format venues as plain text (without HTML)
@@ -222,13 +237,16 @@ function generateSingleMovie(tmdbId) {
   } else if (finalItems.length === 2) {
     venuesPlainText = `${finalItems[0].text} & ${finalItems[1].text}`;
   } else if (finalItems.length > 2) {
-    const allButLast = finalItems.slice(0, -1).map((item) => item.text).join(", ");
+    const allButLast = finalItems
+      .slice(0, -1)
+      .map((item) => item.text)
+      .join(", ");
     venuesPlainText = `${allButLast}, & ${finalItems[finalItems.length - 1].text}`;
   }
 
   const timestamp = getTimestamp();
   const infoPath = path.join(outputDir, `single-movie_${timestamp}.txt`);
-  
+
   // Build social-style text with header and footer
   let info = `🎬 MOVIE SPOTLIGHT! 🎬\n\n`;
   info += `${movie.title}`;
@@ -237,12 +255,14 @@ function generateSingleMovie(tmdbId) {
   if (directorName) info += `Directed by ${directorName}\n`;
   info += `\n`;
   if (synopsis) info += `${synopsis}\n\n`;
-  const showingPrefix = showingDuration ? `Now showing for ${showingDuration} at` : "Now showing at";
+  const showingPrefix = showingDuration
+    ? `Now showing for ${showingDuration} at`
+    : "Now showing at";
   info += `📍 ${showingPrefix} ${venuesPlainText}\n\n`;
   info += `🌐 Every film, every cinema, one place. Find showtimes at Clusterflick.com\n\n`;
   info += `---\n\n`;
   info += `#NowShowing #LondonCinema #IndieFilm #Clusterflick\n\n`;
-  info += `✨ One film. One spotlight. Don't miss it.`;
+  info += `✨ One film. One spotlight. Don't miss it!`;
 
   fs.writeFileSync(infoPath, info, "utf8");
   console.log(`Info saved: ${infoPath}`);
