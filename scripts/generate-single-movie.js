@@ -38,6 +38,7 @@ function generateSingleMovie(tmdbId) {
   const venueIds = new Set();
   const now = Date.now();
   let lastPerformanceTime = 0;
+  let totalPerformanceCount = 0;
 
   if (movie.showings) {
     for (const showingId in movie.showings) {
@@ -48,6 +49,7 @@ function generateSingleMovie(tmdbId) {
       );
       if (upcomingPerformances.length > 0 && showing.venueId) {
         venueIds.add(showing.venueId);
+        totalPerformanceCount += upcomingPerformances.length;
         // Track the latest performance time
         upcomingPerformances.forEach((p) => {
           if (p.time > lastPerformanceTime) {
@@ -297,14 +299,25 @@ function generateSingleMovie(tmdbId) {
   if (directorName) info += `Directed by ${directorName}\n`;
   info += `\n`;
   if (synopsis) info += `${synopsis}\n\n`;
-  const showingPrefix = showingDuration
-    ? `Now showing for ${showingDuration} at`
-    : "Now showing at";
-  info += `📍 ${showingPrefix} ${venuesPlainText}\n\n`;
+  // Build the showing text with performance count and duration
+  let showingText = "";
+  if (totalPerformanceCount > 0 && showingDuration) {
+    const perfWord =
+      totalPerformanceCount === 1 ? "performance" : "performances";
+    const durationPrep = totalPerformanceCount === 1 ? "in" : "over";
+    showingText = `Showing ${totalPerformanceCount} ${perfWord} ${durationPrep} ${showingDuration}, at ${venuesPlainText}`;
+  } else if (totalPerformanceCount > 0) {
+    const perfWord =
+      totalPerformanceCount === 1 ? "performance" : "performances";
+    showingText = `Showing ${totalPerformanceCount} ${perfWord}, at ${venuesPlainText}`;
+  } else {
+    showingText = `Now showing at ${venuesPlainText}`;
+  }
+  info += `📍 ${showingText}\n\n`;
   info += `🌐 Every film, every cinema, one place. Find showtimes at Clusterflick.com\n\n`;
   info += `---\n\n`;
   info += `#NowShowing #LondonCinema #IndieFilm #Clusterflick\n\n`;
-  info += `✨ One film. One spotlight. Don't miss it!`;
+  info += `✨ Discover something special at the cinema!`;
 
   fs.writeFileSync(infoPath, info, "utf8");
   console.log(`Info saved: ${infoPath}`);
