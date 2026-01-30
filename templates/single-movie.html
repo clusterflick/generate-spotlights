@@ -158,13 +158,25 @@
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 12;
+        text-wrap: balance;
+      }
+
+      .center-section {
+        position: relative;
+        z-index: 1;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
       }
 
       .rating-container {
         position: relative;
         z-index: 1;
         width: 100%;
-        padding: 36px 50px 0 50px;
+        padding: 0 50px;
         display: flex;
         justify-content: center;
         gap: 24px;
@@ -234,12 +246,12 @@
         position: relative;
         z-index: 1;
         width: 100%;
-        padding: 30px 50px 0 50px;
+        padding: 16px 50px 0 50px;
         text-align: center;
       }
 
       .venues-text {
-        font-size: 32px;
+        font-size: 30px;
         font-weight: 500;
         color: rgba(255, 255, 255, 0.85);
         line-height: 1.4;
@@ -254,10 +266,23 @@
         color: #f12869;
       }
 
+      .branding-spacer {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        padding: 0 10px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        gap: 24px;
+        visibility: hidden;
+      }
+
       .branding {
         position: absolute;
-        bottom: 10px;
-        right: 10px;
+        bottom: 0;
+        right: 0;
+        padding: 10px;
         display: flex;
         align-items: flex-end;
         gap: 24px;
@@ -272,6 +297,8 @@
         display: inline-block;
         z-index: 0;
         text-align: right;
+        text-wrap: balance;
+        margin-bottom: 8px;
       }
 
       .title-outline {
@@ -304,7 +331,8 @@
             <p class="synopsis">{{SYNOPSIS}}</p>
           </div>
         </div>
-        <div class="rating-container">
+        <div class="center-section">
+          <div class="rating-container">
           <div class="rating-badge letterboxd">
             <svg
               class="rating-icon"
@@ -425,10 +453,20 @@
             </div>
           </div>
         </div>
-        <div class="venues-container">
-          <p class="venues-text">
-            <span class="venues-label">Showing at </span>{{VENUES_TEXT}}
-          </p>
+          <div class="venues-container">
+            <p class="venues-text">
+              <span class="venues-label">Showing at </span>{{VENUES_TEXT}}
+            </p>
+          </div>
+        </div>
+        <div class="branding-spacer">
+          <span class="title">
+            <span class="title-outline" aria-hidden="true"
+              >{{MOVIE_TITLE}} ({{MOVIE_YEAR}})</span
+            >
+            {{MOVIE_TITLE}} ({{MOVIE_YEAR}})
+          </span>
+          <img src="../assets/icon.svg" alt="" class="icon" />
         </div>
         <div class="branding">
           <span class="title">
