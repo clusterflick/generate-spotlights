@@ -299,13 +299,37 @@ function generateSingleMovie(tmdbId) {
   if (directorName) info += `Directed by ${directorName}\n`;
   info += `\n`;
   if (synopsis) info += `${synopsis}\n\n`;
+
+  // Add ratings if available (order: Letterboxd, IMDB, RT)
+  const ratingParts = [];
+  if (letterboxdRating)
+    ratingParts.push(`💚 ${letterboxdRating} /5 Letterboxd`);
+  if (imdbRating) ratingParts.push(`⭐ ${imdbRating} /10 IMDB`);
+  if (rtCriticsScore !== "" || rtAudienceScore !== "") {
+    let rtText = "";
+    if (rtCriticsScore !== "") rtText += `🍅 ${rtCriticsScore}%`;
+    if (rtCriticsScore !== "" && rtAudienceScore !== "") rtText += " ";
+    if (rtAudienceScore !== "") rtText += `🍿 ${rtAudienceScore}%`;
+    rtText += " Rotten Tomatoes";
+    ratingParts.push(rtText);
+  }
+  if (ratingParts.length > 0) {
+    info += `${ratingParts.join("  •  ")}\n\n`;
+  }
+
   // Build the showing text with performance count and duration
   let showingText = "";
   if (totalPerformanceCount > 0 && showingDuration) {
     const perfWord =
       totalPerformanceCount === 1 ? "performance" : "performances";
-    const durationPrep = totalPerformanceCount === 1 ? "in" : "over";
-    showingText = `Showing ${totalPerformanceCount} ${perfWord} ${durationPrep} ${showingDuration}, at ${venuesPlainText}`;
+    // For single performance, use "in 3 weeks" instead of "over the next 3 weeks"
+    let durationText;
+    if (totalPerformanceCount === 1) {
+      durationText = `in ${showingDuration.replace("the next ", "")}`;
+    } else {
+      durationText = `over ${showingDuration}`;
+    }
+    showingText = `Showing ${totalPerformanceCount} ${perfWord} ${durationText}, at ${venuesPlainText}`;
   } else if (totalPerformanceCount > 0) {
     const perfWord =
       totalPerformanceCount === 1 ? "performance" : "performances";
