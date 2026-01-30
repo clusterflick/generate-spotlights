@@ -76,6 +76,32 @@ npm run generate:new-films
 - `output/new-films-instagram_YYYY-MM-DD_HHMM.txt` - Instagram post with @handles
 - `output/new-films-generic_YYYY-MM-DD_HHMM.txt` - Generic post without handles
 
+### Generate Single Movie Spotlight
+
+Generates a spotlight for a single movie, featuring a large poster with title and venue information.
+
+:warning: Ensure fresh data in `combined-data/` and `matched-data/`
+
+```bash
+npm run generate:single-movie -- <TMDB_ID>
+```
+
+**Example:**
+```bash
+npm run generate:single-movie -- 550
+```
+
+**Features:**
+- Large poster with title displayed below
+- Venue list showing where the movie is playing
+- Automatic venue grouping when more than 7 venues (e.g., "12 Cineworlds")
+- Duration calculation (e.g., "Now showing for the next month")
+- Movie details: title, year, director, and synopsis
+
+**Outputs:**
+- `site/single-movie.html` - Visual spotlight with poster and title
+- `output/single-movie_YYYY-MM-DD_HHMM.txt` - Social media text with movie details
+
 ### Take Screenshot
 
 Takes a screenshot of the generated HTML using Playwright.
@@ -85,11 +111,13 @@ Takes a screenshot of the generated HTML using Playwright.
 ```bash
 npm run screenshot:last-chance
 npm run screenshot:new-films
+npm run screenshot:single-movie
 ```
 
 **Outputs:**
 - `output/last-chance_YYYY-MM-DD_HHMM.png` - Screenshot of the Last Chance collage
 - `output/new-films_YYYY-MM-DD_HHMM.png` - Screenshot of the New Films collage
+- `output/single-movie_YYYY-MM-DD_HHMM.png` - Screenshot of the Single Movie spotlight
 
 ### Format Code
 
@@ -117,9 +145,17 @@ Edit constants at the top of the generate scripts to adjust:
 
 ## GitHub Actions
 
-Both workflows run automatically every Sunday at 9pm UTC, generating content for the upcoming week. They can also be triggered manually.
+### Scheduled Workflows
 
-Artifacts are uploaded for each:
-- `social-media-text` - Twitter, Instagram, and generic text files
+The Last Chance and New Films workflows run automatically every Sunday at 9pm UTC, generating content for the upcoming week. They can also be triggered manually.
+
+### Single Movie Workflow
+
+The Single Movie workflow is triggered manually only. Go to Actions → "Generate Single Movie Spotlight" → "Run workflow" and enter a TMDB ID.
+
+### Artifacts
+
+All workflows upload artifacts:
+- `social-media-text` - Text files for social media posts
 - `screenshot` - The PNG image
 - `html` - The HTML file

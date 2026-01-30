@@ -5,8 +5,10 @@
   "scripts": {
     "generate:last-chance": "node scripts/generate-last-chance.js",
     "generate:new-films": "node scripts/generate-new-films.js",
+    "generate:single-movie": "node scripts/generate-single-movie.js",
     "screenshot:last-chance": "node scripts/screenshot.js last-chance",
     "screenshot:new-films": "node scripts/screenshot.js new-films",
+    "screenshot:single-movie": "node scripts/screenshot.js single-movie",
     "format": "prettier --write \"scripts/**/*.js\" \"templates/**/*.html\" \".github/**/*.yml\"",
     "format:check": "prettier --check \"scripts/**/*.js\" \"templates/**/*.html\" \".github/**/*.yml\""
   },
