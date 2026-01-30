@@ -12,7 +12,8 @@ const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
  */
 function generateSingleMovie(tmdbId) {
   const rootDir = path.join(__dirname, "..");
-  const { data } = loadData(rootDir);
+  const { data, imdbRatings, letterboxdRatings, rottenTomatoesRatings } =
+    loadData(rootDir);
 
   // Find the movie by TMDB ID
   const movie = data.movies[tmdbId];
@@ -187,27 +188,7 @@ function generateSingleMovie(tmdbId) {
     .map((v) => v.name)
     .sort((a, b) => a.localeCompare(b));
 
-  // Load the template
-  const templatePath = path.join(rootDir, "templates", "single-movie.html");
-  let template = fs.readFileSync(templatePath, "utf8");
-
-  // Replace placeholders
-  template = template.replace(/\{\{MOVIE_TITLE\}\}/g, escapeHtml(movie.title));
-  template = template.replace(/\{\{POSTER_URL\}\}/g, posterUrl);
-  template = template.replace(/\{\{VENUES_TEXT\}\}/g, venuesText);
-
-  // Write the HTML file
-  const siteDir = path.join(rootDir, "site");
-  fs.mkdirSync(siteDir, { recursive: true });
-  const htmlPath = path.join(siteDir, "single-movie.html");
-  fs.writeFileSync(htmlPath, template);
-  console.log(`\nHTML generated: ${htmlPath}`);
-
-  // Also write movie info to output directory
-  const outputDir = path.join(rootDir, "output");
-  fs.mkdirSync(outputDir, { recursive: true });
-
-  // Extract movie details
+  // Extract year for template replacement
   const year = movie.releaseDate
     ? new Date(movie.releaseDate).getFullYear()
     : movie.year || "";
@@ -225,7 +206,68 @@ function generateSingleMovie(tmdbId) {
         : "");
   }
 
+  // Get synopsis
   const synopsis = movie.overview || movie.synopsis || "";
+
+  // Get ratings from all sources
+  const imdbData = imdbRatings[tmdbId];
+  const imdbRating = imdbData?.rating || "";
+
+  const letterboxdData = letterboxdRatings[tmdbId];
+  const letterboxdRating = letterboxdData?.rating
+    ? letterboxdData.rating.toFixed(1)
+    : "";
+
+  const rtData = rottenTomatoesRatings[tmdbId];
+  const rtCriticsScore = rtData?.critics?.all?.score || "";
+  const rtAudienceScore = rtData?.audience?.all?.score || "";
+  // Determine if fresh (≥60%) or rotten (<60%)
+  const rtCriticsIsFresh = rtCriticsScore !== "" && rtCriticsScore >= 60;
+  const rtAudienceIsFresh = rtAudienceScore !== "" && rtAudienceScore >= 60;
+
+  // Load the template
+  const templatePath = path.join(rootDir, "templates", "single-movie.html");
+  let template = fs.readFileSync(templatePath, "utf8");
+
+  // Replace placeholders
+  template = template.replace(/\{\{MOVIE_TITLE\}\}/g, escapeHtml(movie.title));
+  template = template.replace(/\{\{MOVIE_YEAR\}\}/g, year);
+  template = template.replace(/\{\{POSTER_URL\}\}/g, posterUrl);
+  template = template.replace(/\{\{VENUES_TEXT\}\}/g, venuesText);
+  template = template.replace(
+    /\{\{DIRECTOR_NAME\}\}/g,
+    escapeHtml(directorName),
+  );
+  template = template.replace(/\{\{SYNOPSIS\}\}/g, escapeHtml(synopsis));
+  template = template.replace(/\{\{IMDB_RATING\}\}/g, imdbRating);
+  template = template.replace(/\{\{LETTERBOXD_RATING\}\}/g, letterboxdRating);
+  template = template.replace(
+    /\{\{RT_CRITICS_SCORE\}\}/g,
+    rtCriticsScore !== "" ? `${rtCriticsScore}%` : "",
+  );
+  template = template.replace(
+    /\{\{RT_CRITICS_CLASS\}\}/g,
+    rtCriticsIsFresh ? "fresh" : "rotten",
+  );
+  template = template.replace(
+    /\{\{RT_AUDIENCE_SCORE\}\}/g,
+    rtAudienceScore !== "" ? `${rtAudienceScore}%` : "",
+  );
+  template = template.replace(
+    /\{\{RT_AUDIENCE_CLASS\}\}/g,
+    rtAudienceIsFresh ? "fresh" : "rotten",
+  );
+
+  // Write the HTML file
+  const siteDir = path.join(rootDir, "site");
+  fs.mkdirSync(siteDir, { recursive: true });
+  const htmlPath = path.join(siteDir, "single-movie.html");
+  fs.writeFileSync(htmlPath, template);
+  console.log(`\nHTML generated: ${htmlPath}`);
+
+  // Also write movie info to output directory
+  const outputDir = path.join(rootDir, "output");
+  fs.mkdirSync(outputDir, { recursive: true });
 
   // Format venues as plain text (without HTML)
   let venuesPlainText = "";

@@ -31,7 +31,9 @@ async function takeScreenshot(spotlightType) {
   console.log("Waiting for images to load...");
   await page.waitForFunction(
     () => {
-      const images = document.querySelectorAll(".poster-item img");
+      const images = document.querySelectorAll(
+        ".poster-item img, .poster-column img",
+      );
       return (
         images.length > 0 &&
         Array.from(images).every((img) => img.complete && img.naturalHeight > 0)
