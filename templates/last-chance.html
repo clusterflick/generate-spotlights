@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Last Chance Movies - Ending This Week</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       * {
         margin: 0;
@@ -25,6 +31,9 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
       }
 
       #content {
@@ -63,11 +72,13 @@
 
       .title {
         position: relative;
-        font-size: 56px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 52px;
         font-weight: 700;
         color: #010013;
         display: inline-block;
         z-index: 0;
+        text-wrap: balance;
       }
 
       .title-outline {

@@ -42,10 +42,18 @@ async function takeScreenshot(spotlightType) {
     { timeout: 60000 },
   );
 
+  console.log("Images loaded");
+
+  // Wait for web fonts to load
+  console.log("Waiting for fonts to load...");
+  await page.waitForFunction(() => document.fonts.ready.then(() => true), {
+    timeout: 30000,
+  });
+
   // Small extra delay to ensure rendering is complete
   await page.waitForTimeout(500);
 
-  console.log("Images loaded");
+  console.log("Fonts loaded");
 
   // Screenshot the #content element
   const content = await page.$("#content");
