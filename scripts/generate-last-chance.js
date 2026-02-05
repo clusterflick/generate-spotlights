@@ -137,9 +137,12 @@ runSpotlight({
       "These {{count}} films are leaving London cinemas soon - catch them before they're gone!",
     hashtags: "#LastChance #LondonCinema #IndieFilm #Clusterflick",
     venueIdField: "lastVenueId",
-    formatMovieLine: (movie, emoji) =>
-      `   ${emoji} ${movie.title} - ${formatSocialDate(movie.latestPerformance)}\n`,
+    formatMovieLine: (movie, { compact }) =>
+      compact
+        ? `${movie.title} - ${formatSocialDate(movie.latestPerformance, true)}\n`
+        : `   \u{1F3AC} ${movie.title} - ${formatSocialDate(movie.latestPerformance)}\n`,
     footer:
       "\u{1F4A1} Pro tip: The best seat is the one you're actually sitting in. Go see something!",
+    useInstagramCompact: true,
   },
 });

@@ -129,7 +129,9 @@ runSpotlight({
       "These {{count}} films just landed this week in London cinemas - check them out!",
     hashtags: "#NewFilms #LondonCinema #IndieFilm #Clusterflick",
     venueIdField: "firstVenueId",
-    formatMovieLine: (movie, emoji) => `   ${emoji} ${movie.title}\n`,
+    formatMovieLine: (movie, { compact }) =>
+      compact ? `${movie.title}\n` : `   \u{1F3AC} ${movie.title}\n`,
     footer: "\u{1F37F} Fresh popcorn, fresh films. What are you waiting for?",
+    useInstagramCompact: true,
   },
 });

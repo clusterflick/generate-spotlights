@@ -3,7 +3,11 @@ const path = require("path");
 const { getTimestamp, findGenreIdByName, formatDate } = require("./utils");
 const { generateCollageHtml } = require("./collage");
 const { loadData } = require("./data-loader");
-const { generateSocialText } = require("./social-text");
+const {
+  generateSocialText,
+  generateInstagramCompactText,
+  chunkForTwitterThread,
+} = require("./social-text");
 
 /**
  * Run a spotlight generation
@@ -83,17 +87,30 @@ function runSpotlight(config) {
   const platformNames = ["twitter", "instagram", "generic"];
 
   platforms.forEach((platform, i) => {
-    const text = generateSocialText(allMovies, data.venues, {
-      ...socialTextConfig,
-      platform,
-    });
+    let text;
+    if (platform === "instagram" && socialTextConfig.useInstagramCompact) {
+      // Use compact format for Instagram if opted in
+      text = generateInstagramCompactText(allMovies, data.venues, socialTextConfig);
+    } else if (platform === "twitter") {
+      // Generate full text then chunk for Twitter thread
+      const fullText = generateSocialText(allMovies, data.venues, {
+        ...socialTextConfig,
+        platform,
+      });
+      text = chunkForTwitterThread(fullText);
+    } else {
+      text = generateSocialText(allMovies, data.venues, {
+        ...socialTextConfig,
+        platform,
+      });
+    }
     const outputPath = path.join(
       outputDir,
       `${name}-${platformNames[i]}_${timestamp}.txt`,
     );
     fs.writeFileSync(outputPath, text, "utf8");
     console.log(
-      `${platformNames[i].charAt(0).toUpperCase() + platformNames[i].slice(1)} text generated: ${outputPath}`,
+      `${platformNames[i].charAt(0).toUpperCase() + platformNames[i].slice(1)} text generated: ${outputPath} (${text.length} chars)`,
     );
   });
 }

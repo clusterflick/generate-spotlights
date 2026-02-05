@@ -110,18 +110,40 @@ function getOrdinalSuffix(n) {
 
 /**
  * Format date for social media (friendlier format)
+ * @param {string} isoDate - ISO date string
+ * @param {boolean} compact - Use compact format for character-limited platforms
  */
-function formatSocialDate(isoDate) {
+function formatSocialDate(isoDate, compact = false) {
   const date = new Date(isoDate);
   const now = new Date();
-  const weekday = date.toLocaleDateString("en-GB", { weekday: "long" });
   const dayNum = date.getDate();
+
+  if (compact) {
+    // Compact format: "Wed 4 @ 8pm" or "Wed 4 Feb @ 8pm"
+    const weekday = date.toLocaleDateString("en-GB", { weekday: "short" });
+    const hour = date.getHours();
+    const minute = date.getMinutes();
+    const hour12 = hour % 12 || 12;
+    const ampm = hour < 12 ? "am" : "pm";
+    const timeStr = minute === 0 ? `${hour12}${ampm}` : `${hour12}:${String(minute).padStart(2, "0")}${ampm}`;
+
+    if (
+      date.getMonth() !== now.getMonth() ||
+      date.getFullYear() !== now.getFullYear()
+    ) {
+      const month = date.toLocaleDateString("en-GB", { month: "short" });
+      return `${weekday} ${dayNum} ${month} @ ${timeStr}`;
+    }
+    return `${weekday} ${dayNum} @ ${timeStr}`;
+  }
+
+  // Full format: "Wednesday 4th at 20:00"
+  const weekday = date.toLocaleDateString("en-GB", { weekday: "long" });
   const time = date.toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
   });
 
-  // Only include month if different from current month
   if (
     date.getMonth() !== now.getMonth() ||
     date.getFullYear() !== now.getFullYear()
