@@ -3,8 +3,8 @@ name: Generate New Films Content
 on:
   workflow_dispatch:
   schedule:
-    # Run every Sunday at 9pm UTC (shows new films added Mon-Sun this week)
-    - cron: "0 21 * * 0"
+    # Run every Sunday at 7pm UTC (shows new films added Mon-Sun this week)
+    - cron: "0 19 * * 0"
 
 jobs:
   generate:
