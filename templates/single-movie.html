@@ -17,6 +17,10 @@
         box-sizing: border-box;
       }
 
+      .hidden {
+        display: none;
+      }
+
       html,
       body {
         min-height: 100vh;
@@ -77,39 +81,12 @@
         bottom: 0;
         z-index: 0;
         border-radius: 32px;
-        background:
-          /* Yellow/gold accent blob top-right */
-          radial-gradient(
-            circle 280px at 85% 15%,
-            rgba(250, 222, 5, 0.1) 0%,
-            transparent 60%
-          ),
-          /* Pink blob top-left */
-          radial-gradient(
-              circle 400px at 10% 20%,
-              rgba(241, 40, 105, 0.25) 0%,
-              transparent 60%
-            ),
-          /* Blue blob bottom-right */
-          radial-gradient(
-              circle 350px at 90% 80%,
-              rgba(49, 158, 219, 0.2) 0%,
-              transparent 60%
-            ),
-          /* Subtle purple blob center */
-          radial-gradient(
-              circle 300px at 50% 50%,
-              rgba(100, 50, 150, 0.15) 0%,
-              transparent 60%
-            ),
-          /* Secondary pink bloom bottom-left */
-          radial-gradient(
-              circle 250px at 15% 85%,
-              rgba(241, 40, 105, 0.1) 0%,
-              transparent 60%
-            ),
-          /* Deep base */
-          linear-gradient(160deg, #08080f 0%, #010013 50%, #0a0818 100%);
+        background: linear-gradient(
+          160deg,
+          #08080f 0%,
+          #010013 50%,
+          #0a0818 100%
+        );
       }
 
       /* Film grain / noise texture overlay */
@@ -418,7 +395,7 @@
         </div>
         <div class="center-section">
           <div class="rating-container">
-            <div class="rating-badge letterboxd">
+            <div class="rating-badge letterboxd {{LETTERBOXD_HIDDEN}}">
               <svg
                 class="rating-icon"
                 viewBox="0 0 500 500"
@@ -433,7 +410,7 @@
               <span class="rating-score">{{LETTERBOXD_RATING}}</span
               ><span class="rating-scale">/5</span>
             </div>
-            <div class="rating-badge imdb">
+            <div class="rating-badge imdb {{IMDB_HIDDEN}}">
               <svg
                 class="rating-icon"
                 xmlns="http://www.w3.org/2000/svg"
@@ -462,8 +439,8 @@
               <span class="rating-score">{{IMDB_RATING}}</span
               ><span class="rating-scale">/10</span>
             </div>
-            <div class="rating-badge rt">
-              <div class="rt-score-item">
+            <div class="rating-badge rt {{RT_HIDDEN}}">
+              <div class="rt-score-item {{RT_CRITICS_HIDDEN}}">
                 <svg
                   class="rating-icon"
                   viewBox="0 0 80 80"
@@ -491,7 +468,7 @@
                 </svg>
                 <span class="rating-score">{{RT_CRITICS_SCORE}}</span>
               </div>
-              <div class="rt-score-item">
+              <div class="rt-score-item {{RT_AUDIENCE_HIDDEN}}">
                 <svg
                   class="rating-icon"
                   viewBox="0 0 80 80"

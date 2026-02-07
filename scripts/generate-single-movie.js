@@ -260,6 +260,26 @@ function generateSingleMovie(tmdbId) {
     rtAudienceIsFresh ? "fresh" : "rotten",
   );
 
+  // Hide rating badges when scores are unavailable
+  template = template.replace(
+    /\{\{LETTERBOXD_HIDDEN\}\}/g,
+    letterboxdRating ? "" : "hidden",
+  );
+  template = template.replace(
+    /\{\{IMDB_HIDDEN\}\}/g,
+    imdbRating ? "" : "hidden",
+  );
+  const hasAnyRt = rtCriticsScore !== "" || rtAudienceScore !== "";
+  template = template.replace(/\{\{RT_HIDDEN\}\}/g, hasAnyRt ? "" : "hidden");
+  template = template.replace(
+    /\{\{RT_CRITICS_HIDDEN\}\}/g,
+    rtCriticsScore !== "" ? "" : "hidden",
+  );
+  template = template.replace(
+    /\{\{RT_AUDIENCE_HIDDEN\}\}/g,
+    rtAudienceScore !== "" ? "" : "hidden",
+  );
+
   // Write the HTML file
   const siteDir = path.join(rootDir, "site");
   fs.mkdirSync(siteDir, { recursive: true });
