@@ -125,7 +125,10 @@ function formatSocialDate(isoDate, compact = false) {
     const minute = date.getMinutes();
     const hour12 = hour % 12 || 12;
     const ampm = hour < 12 ? "am" : "pm";
-    const timeStr = minute === 0 ? `${hour12}${ampm}` : `${hour12}:${String(minute).padStart(2, "0")}${ampm}`;
+    const timeStr =
+      minute === 0
+        ? `${hour12}${ampm}`
+        : `${hour12}:${String(minute).padStart(2, "0")}${ampm}`;
 
     if (
       date.getMonth() !== now.getMonth() ||

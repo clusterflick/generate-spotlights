@@ -53,11 +53,11 @@
         position: relative;
         width: 1000px;
         height: 1000px;
-        border: 8px solid #fade05;
+        border: 8px solid rgba(250, 222, 5, 0.75);
         border-radius: 40px;
         box-shadow:
           0 0 0 8px #010013,
-          0 0 0 16px #fade05,
+          0 0 0 16px rgba(250, 222, 5, 0.75),
           0 0 60px rgba(250, 222, 5, 0.4);
         display: flex;
         flex-direction: column;
@@ -78,26 +78,52 @@
         z-index: 0;
         border-radius: 32px;
         background:
-          /* Pink blob top-left */
+          /* Yellow/gold accent blob top-right */
           radial-gradient(
-            circle 400px at 10% 20%,
-            rgba(241, 40, 105, 0.15) 0%,
+            circle 280px at 85% 15%,
+            rgba(250, 222, 5, 0.1) 0%,
             transparent 60%
           ),
+          /* Pink blob top-left */
+          radial-gradient(
+              circle 400px at 10% 20%,
+              rgba(241, 40, 105, 0.25) 0%,
+              transparent 60%
+            ),
           /* Blue blob bottom-right */
           radial-gradient(
               circle 350px at 90% 80%,
-              rgba(49, 158, 219, 0.12) 0%,
+              rgba(49, 158, 219, 0.2) 0%,
               transparent 60%
             ),
           /* Subtle purple blob center */
           radial-gradient(
               circle 300px at 50% 50%,
-              rgba(100, 50, 150, 0.08) 0%,
+              rgba(100, 50, 150, 0.15) 0%,
+              transparent 60%
+            ),
+          /* Secondary pink bloom bottom-left */
+          radial-gradient(
+              circle 250px at 15% 85%,
+              rgba(241, 40, 105, 0.1) 0%,
               transparent 60%
             ),
           /* Deep base */
           linear-gradient(160deg, #08080f 0%, #010013 50%, #0a0818 100%);
+      }
+
+      /* Film grain / noise texture overlay */
+      .movie-spotlight::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 999;
+        border-radius: 32px;
+        background: white;
+        filter: url(#grain);
+        opacity: 0.035;
+        pointer-events: none;
+        mix-blend-mode: overlay;
       }
 
       .content-row {
@@ -153,6 +179,9 @@
         text-transform: uppercase;
         letter-spacing: 2px;
         margin-bottom: 8px;
+        text-shadow:
+          0 0 10px rgba(241, 40, 105, 0.6),
+          0 0 30px rgba(241, 40, 105, 0.3);
       }
 
       .director-name {
@@ -165,6 +194,9 @@
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 100%;
+        text-shadow:
+          0 0 10px rgba(49, 158, 219, 0.5),
+          0 0 30px rgba(49, 158, 219, 0.25);
       }
 
       .synopsis {
@@ -191,6 +223,23 @@
         width: 100%;
       }
 
+      /* Gradient accent line divider */
+      .center-section::before {
+        content: "";
+        display: block;
+        width: 80%;
+        height: 1px;
+        margin-bottom: 20px;
+        flex-shrink: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(250, 222, 5, 0.45) 30%,
+          rgba(241, 40, 105, 0.35) 70%,
+          transparent
+        );
+      }
+
       .rating-container {
         position: relative;
         z-index: 1;
@@ -206,10 +255,17 @@
         display: inline-flex;
         align-items: center;
         gap: 12px;
-        background: rgba(255, 255, 255, 0.08);
-        border: 2px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-top-color: rgba(255, 255, 255, 0.3);
+        border-left-color: rgba(255, 255, 255, 0.2);
         border-radius: 14px;
         padding: 12px 22px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.08),
+          0 4px 20px rgba(0, 0, 0, 0.3);
       }
 
       .rating-icon {
@@ -280,10 +336,16 @@
       .venue-name {
         color: #319edb;
         white-space: nowrap;
+        text-shadow:
+          0 0 8px rgba(49, 158, 219, 0.4),
+          0 0 20px rgba(49, 158, 219, 0.2);
       }
 
       .venues-label {
         color: #f12869;
+        text-shadow:
+          0 0 8px rgba(241, 40, 105, 0.4),
+          0 0 20px rgba(241, 40, 105, 0.2);
       }
 
       .branding-spacer {
@@ -329,6 +391,8 @@
         -webkit-text-fill-color: transparent;
         -webkit-text-stroke: 4px #fade05;
         user-select: none;
+        filter: drop-shadow(0 0 8px rgba(250, 222, 5, 0.5))
+          drop-shadow(0 0 20px rgba(250, 222, 5, 0.25));
       }
 
       .icon {
@@ -500,5 +564,16 @@
         </div>
       </div>
     </div>
+    <!-- SVG noise filter for film grain texture -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none">
+      <filter id="grain">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.65"
+          numOctaves="3"
+          stitchTiles="stitch"
+        />
+      </filter>
+    </svg>
   </body>
 </html>

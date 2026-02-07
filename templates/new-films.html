@@ -47,12 +47,61 @@
         position: relative;
         width: 1000px;
         height: 1000px;
-        border: 8px solid #319edb;
+        border: 8px solid rgba(49, 158, 219, 0.75);
         border-radius: 40px;
         box-shadow:
           0 0 0 8px #010013,
-          0 0 0 16px #319edb,
+          0 0 0 16px rgba(49, 158, 219, 0.75),
           0 0 60px rgba(49, 158, 219, 0.4);
+        background: #010013;
+      }
+
+      /* Mesh gradient background with blue-themed blobs */
+      .poster-collage::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 0;
+        border-radius: 32px;
+        background:
+          radial-gradient(
+            circle 400px at 15% 25%,
+            rgba(49, 158, 219, 0.2) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            circle 350px at 85% 75%,
+            rgba(49, 158, 219, 0.15) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            circle 300px at 50% 50%,
+            rgba(100, 50, 150, 0.1) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            circle 250px at 80% 20%,
+            rgba(250, 222, 5, 0.08) 0%,
+            transparent 60%
+          ),
+          linear-gradient(160deg, #08080f 0%, #010013 50%, #0a0818 100%);
+      }
+
+      /* Film grain / noise texture overlay */
+      .poster-collage::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 999;
+        border-radius: 32px;
+        background: white;
+        filter: url(#grain);
+        opacity: 0.035;
+        pointer-events: none;
+        mix-blend-mode: overlay;
       }
 
       .branding {
@@ -88,10 +137,13 @@
         -webkit-text-fill-color: transparent;
         -webkit-text-stroke: 4px #319edb;
         user-select: none;
+        filter: drop-shadow(0 0 8px rgba(49, 158, 219, 0.5))
+          drop-shadow(0 0 20px rgba(49, 158, 219, 0.25));
       }
 
       .poster-item {
         position: absolute;
+        z-index: 1;
         width: 14%;
         box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
         border-radius: 4px;
@@ -118,5 +170,16 @@
         </div>
       </div>
     </div>
+    <!-- SVG noise filter for film grain texture -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none">
+      <filter id="grain">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.65"
+          numOctaves="3"
+          stitchTiles="stitch"
+        />
+      </filter>
+    </svg>
   </body>
 </html>

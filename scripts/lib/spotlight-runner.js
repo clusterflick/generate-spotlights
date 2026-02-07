@@ -90,7 +90,11 @@ function runSpotlight(config) {
     let text;
     if (platform === "instagram" && socialTextConfig.useInstagramCompact) {
       // Use compact format for Instagram if opted in
-      text = generateInstagramCompactText(allMovies, data.venues, socialTextConfig);
+      text = generateInstagramCompactText(
+        allMovies,
+        data.venues,
+        socialTextConfig,
+      );
     } else if (platform === "twitter") {
       // Generate full text then chunk for Twitter thread
       const fullText = generateSocialText(allMovies, data.venues, {

@@ -50,7 +50,9 @@ function generateInstagramCompactText(movies, venues, config) {
     .sort((a, b) => b.count - a.count);
 
   const multiFilmVenues = venueList.filter((v) => v.count >= minFilmsPerVenue);
-  const singleFilmCount = venueList.filter((v) => v.count < minFilmsPerVenue).length;
+  const singleFilmCount = venueList.filter(
+    (v) => v.count < minFilmsPerVenue,
+  ).length;
 
   // Build header section
   // Replace "These {{count}}" with just "{{count}}" for compact format
@@ -213,7 +215,10 @@ function generateSocialText(movies, venues, config) {
 
   for (const section of venueSections) {
     if (
-      headerSection.length + venueContent.length + section.length + footerSection.length <=
+      headerSection.length +
+        venueContent.length +
+        section.length +
+        footerSection.length <=
       charLimit
     ) {
       venueContent += section;
