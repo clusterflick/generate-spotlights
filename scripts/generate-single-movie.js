@@ -15,8 +15,26 @@ function generateSingleMovie(tmdbId) {
   const { data, imdbRatings, letterboxdRatings, rottenTomatoesRatings } =
     loadData(rootDir);
 
-  // Find the movie by TMDB ID
-  const movie = data.movies[tmdbId];
+  // Find the movie by TMDB ID - check top-level movies first, then includedMovies
+  let movie = data.movies[tmdbId];
+  let parentMovie = null;
+
+  if (!movie) {
+    // Search through includedMovies arrays to find this TMDB ID
+    for (const [parentId, parent] of Object.entries(data.movies)) {
+      if (parent.includedMovies) {
+        const included = parent.includedMovies.find((m) => m.id === tmdbId);
+        if (included) {
+          movie = included;
+          parentMovie = parent;
+          console.log(
+            `Found as included movie within: ${parent.title} (${parentId})`,
+          );
+          break;
+        }
+      }
+    }
+  }
 
   if (!movie) {
     console.error(`Movie with TMDB ID ${tmdbId} not found in data`);
@@ -34,19 +52,22 @@ function generateSingleMovie(tmdbId) {
 
   const posterUrl = TMDB_IMAGE_BASE + movie.posterPath;
 
+  // Use the parent movie's showings/performances when this is an included movie
+  const showingsSource = parentMovie || movie;
+
   // Get venues where the movie is showing and find the last performance
   const venueIds = new Set();
   const now = Date.now();
   let lastPerformanceTime = 0;
   let totalPerformanceCount = 0;
 
-  if (movie.showings) {
-    for (const showingId in movie.showings) {
-      const showing = movie.showings[showingId];
+  if (showingsSource.showings) {
+    for (const showingId in showingsSource.showings) {
+      const showing = showingsSource.showings[showingId];
       // Check if showing has upcoming performances
-      const upcomingPerformances = (movie.performances || []).filter(
-        (p) => p.showingId === showingId && p.time > now,
-      );
+      const upcomingPerformances = (
+        showingsSource.performances || []
+      ).filter((p) => p.showingId === showingId && p.time > now);
       if (upcomingPerformances.length > 0 && showing.venueId) {
         venueIds.add(showing.venueId);
         totalPerformanceCount += upcomingPerformances.length;
