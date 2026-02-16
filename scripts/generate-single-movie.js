@@ -65,9 +65,9 @@ function generateSingleMovie(tmdbId) {
     for (const showingId in showingsSource.showings) {
       const showing = showingsSource.showings[showingId];
       // Check if showing has upcoming performances
-      const upcomingPerformances = (
-        showingsSource.performances || []
-      ).filter((p) => p.showingId === showingId && p.time > now);
+      const upcomingPerformances = (showingsSource.performances || []).filter(
+        (p) => p.showingId === showingId && p.time > now,
+      );
       if (upcomingPerformances.length > 0 && showing.venueId) {
         venueIds.add(showing.venueId);
         totalPerformanceCount += upcomingPerformances.length;
