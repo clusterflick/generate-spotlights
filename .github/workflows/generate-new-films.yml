@@ -11,9 +11,9 @@ jobs:
     name: Generate content
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: .node-version
 
@@ -48,7 +48,7 @@ jobs:
         run: npm run screenshot:new-films
 
       - name: Upload text outputs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: social-media-text
           path: |
@@ -57,13 +57,13 @@ jobs:
             output/new-films-generic_*.txt
 
       - name: Upload screenshot
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: screenshot
           path: output/new-films_*.png
 
       - name: Upload HTML
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: html
           path: site/new-films.html
