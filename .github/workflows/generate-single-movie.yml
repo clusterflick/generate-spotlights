@@ -49,7 +49,9 @@ jobs:
           out-file-path: "matched-data"
 
       - name: Generate single movie content
-        run: npm run generate:single-movie -- ${{ inputs.tmdb_id }}
+        env:
+          TMDB_ID: ${{ inputs.tmdb_id }}
+        run: npm run generate:single-movie -- "$TMDB_ID"
 
       - name: Take screenshot
         run: npm run screenshot:single-movie
