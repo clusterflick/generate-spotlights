@@ -6,12 +6,17 @@ on:
     # Run every Sunday at 7pm UTC (shows new films added Mon-Sun this week)
     - cron: "0 19 * * 0"
 
+permissions:
+  contents: read
+
 jobs:
   generate:
     name: Generate content
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - uses: actions/setup-node@v6
         with:
