@@ -35,12 +35,11 @@ function generateInstagramCompactText(movies, venues, config) {
   });
 
   // Get top picks by rating
-  const topPicks = [...movies]
+  const ratedMovies = [...movies]
     .filter((m) => m.rating)
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, topPicksCount);
+    .sort((a, b) => b.rating - a.rating);
 
-  // Get venues with 2+ films, sorted by count
+  // Get venues, sorted by count
   const venueList = Object.entries(moviesByVenue)
     .map(([venueId, venueMovies]) => ({
       venueId,
@@ -49,50 +48,77 @@ function generateInstagramCompactText(movies, venues, config) {
     }))
     .sort((a, b) => b.count - a.count);
 
+  // Venues with 2+ films are listed by name
   const multiFilmVenues = venueList.filter((v) => v.count >= minFilmsPerVenue);
-  const singleFilmCount = venueList.filter(
-    (v) => v.count < minFilmsPerVenue,
-  ).length;
+  const singleFilmVenues = venueList.filter((v) => v.count < minFilmsPerVenue);
 
-  // Build header section
   // Replace "These {{count}}" with just "{{count}}" for compact format
   const compactIntro = intro
     .replace("These {{count}}", "{{count}}")
     .replace("{{count}}", movies.length);
-  let output = `\u{1F3AC} ${header} \u{1F3AC}\n\n`;
-  output += `${compactIntro} \u{1F39F}\u{1F37F}\n\n`;
-  output += `\u{1F310} Every film, every cinema, one place. Find showtimes at Clusterflick.com\n\n`;
-  output += `---\n\n`;
 
-  // Top picks section
-  output += `\u{1F3AC} TOP PICKS\n`;
-  topPicks.forEach((movie) => {
-    const venue = venues[movie[venueIdField]];
-    const venueName = venue?.name || "Unknown venue";
-    output += `${movie.title} @ ${venueName}\n`;
-  });
+  const buildOutput = (picksCount, listedVenueCount) => {
+    const topPicks = ratedMovies.slice(0, picksCount);
+    const listedVenues = multiFilmVenues.slice(0, listedVenueCount);
+    const unlistedVenues = [
+      ...multiFilmVenues.slice(listedVenueCount),
+      ...singleFilmVenues,
+    ];
 
-  // Venues section
-  output += `\n\u{1F4CD} VENUES\n`;
-  multiFilmVenues.forEach((v) => {
-    const venueName = v.venue?.name || "Unknown venue";
-    const handle = v.venue?.socials?.instagram;
-    const handleText = handle ? ` @${handle}` : "";
-    output += `${venueName}${handleText} - ${v.count} films\n`;
-  });
-  if (singleFilmCount > 0) {
-    output += `+${singleFilmCount} more venues with 1 film each\n`;
-  }
+    // Build header section
+    let output = `\u{1F3AC} ${header} \u{1F3AC}\n\n`;
+    output += `${compactIntro} \u{1F39F}\u{1F37F}\n\n`;
+    output += `\u{1F310} Every film, every cinema, one place. Find showtimes at Clusterflick.com\n\n`;
+    output += `---\n\n`;
 
-  // Footer section
-  output += `\n---\n\n`;
-  output += `${hashtags}\n\n`;
-  output += footer;
+    // Top picks section
+    output += `\u{1F3AC} TOP PICKS\n`;
+    topPicks.forEach((movie) => {
+      const venue = venues[movie[venueIdField]];
+      const venueName = venue?.name || "Unknown venue";
+      output += `${movie.title} @ ${venueName}\n`;
+    });
 
-  // If over limit, reduce top picks count
-  if (output.length > charLimit) {
-    const reduced = { ...config, topPicksCount: topPicksCount - 2 };
-    return generateInstagramCompactText(movies, venues, reduced);
+    // Venues section
+    output += `\n\u{1F4CD} VENUES\n`;
+    listedVenues.forEach((v) => {
+      const venueName = v.venue?.name || "Unknown venue";
+      const handle = v.venue?.socials?.instagram;
+      const handleText = handle ? ` @${handle}` : "";
+      output += `${venueName}${handleText} - ${v.count} films\n`;
+    });
+    if (unlistedVenues.length > 0) {
+      const unlistedFilms = unlistedVenues.reduce((n, v) => n + v.count, 0);
+      output +=
+        unlistedFilms === unlistedVenues.length
+          ? `+${unlistedVenues.length} more venues with 1 film each\n`
+          : `+${unlistedVenues.length} more venues with ${unlistedFilms} films\n`;
+    }
+
+    // Footer section
+    output += `\n---\n\n`;
+    output += `${hashtags}\n\n`;
+    output += footer;
+
+    return output;
+  };
+
+  // If over limit, reduce top picks count, then list fewer venues (smallest
+  // first), folding them into the "+N more venues" line
+  let picksCount = topPicksCount;
+  let listedVenueCount = multiFilmVenues.length;
+  let output = buildOutput(picksCount, listedVenueCount);
+  while (output.length > charLimit) {
+    if (picksCount > 0) {
+      picksCount = Math.max(picksCount - 2, 0);
+    } else if (listedVenueCount > 0) {
+      listedVenueCount -= 1;
+    } else {
+      throw new Error(
+        `Instagram text is ${output.length} chars with no top picks or venues listed, over the ${charLimit} limit`,
+      );
+    }
+    output = buildOutput(picksCount, listedVenueCount);
   }
 
   return output;
