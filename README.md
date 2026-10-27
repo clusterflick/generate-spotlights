@@ -1,5 +1,13 @@
 # Generate Spotlights
 
+> **[Clusterflick](https://clusterflick.com)** is a free, open-source site
+> listing every film showing in London, from 450+ venues in one search.
+>
+> This repository generates Clusterflick's social media posts, such as new films
+> and last-chance screenings. See the
+> [Clusterflick organisation](https://github.com/clusterflick) for how the
+> pieces fit together.
+
 Scripts for generating social media content for Clusterflick.
 
 ## Directory Structure
